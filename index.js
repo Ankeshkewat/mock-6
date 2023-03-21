@@ -1,5 +1,7 @@
 const express=require('express');
 const cors=require('cors')
+const jwt=require('jsonwebtoken')
+require('dotenv').config()
 
 const app=express();
 const {Connection}=require('./config/db')
@@ -15,6 +17,8 @@ const {UserRouter}=require('./route/user.router')
 app.get('/',(req,res)=>{res.send('This is the base router of this project')})
 app.post('/register',UserMiddleware,UserRouter)
 app.post('/login',UserRouter)
+app.get('/user',UserRouter)
+app.patch('/edit',UserRouter)
 
 
 app.get('/auth/google',
@@ -23,8 +27,8 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login', session: false }),
     function (req, res) {
-        const token = jwt.sign({ id: req.user._id, first_name: req.user.first_name }, process.env.secret, { expiresIn: '5 days' })
-        res.redirect(`https://wondrous-biscuit-d5ba9b.netlify.app/signup?token=${token}&name=${req.user.first_name}`)
+        const token = jwt.sign({ id: req.user._id,email: req.user.email }, process.env.secret, { expiresIn: '5 days' })
+        res.redirect(`https://ankeshkewatmock6.netlify.app/?token=${token}`)
     });
 
 

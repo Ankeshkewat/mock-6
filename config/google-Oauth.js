@@ -8,21 +8,19 @@ const {UserModel}=require('../model/user.model')
 passport.use(new GoogleStrategy({
     clientID: process.env.clientId,
     clientSecret: process.env.clientSecret,
-    callbackURL: "https://sore-tan-gecko-tam.cyclic.app/auth/google/callback"
+    callbackURL: "https://fuzzy-clam-blazer.cyclic.app/auth/google/callback"
 },
     async function (accessToken, refreshToken, profile, cb) {
         const email = profile._json.email
         const isAlreadyExist = await UserModel.findOne({ email })
-        // console.log(profile)
 
         if (isAlreadyExist) {
             return cb(null, isAlreadyExist)
         }
-        const first_name = profile._json.given_name
-        const last_name = profile._json.family_name
+        const name = profile.displayName
         const password = uuidv4()
-
-        const user = new UserModel({ first_name,last_name, email, password })
+        const profile_pic=profile._json.picture
+        const user = new UserModel({ name, email, password ,profile_pic})
         await user.save()
      
         return cb(null, user);

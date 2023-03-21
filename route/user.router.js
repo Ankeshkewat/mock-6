@@ -45,5 +45,37 @@ UserRouter.post('/login', async (req, res) => {
     }
 })
 
+//get the user
+UserRouter.get('/user', async (req, res) => {
+    try {
+       const token=req.headers?.authorization?.split(" ")[1];
+       if(!token) return res.status(401).json({"msg":'Your are not authorize'})
+       const {email}=jwt.decode(token)
+       let user=await UserModel.find({email});
+       res.status(200).send({"msg":"successfull",data:user})
+    }
+    catch (err) {
+        console.error(err)
+        res.status(500).json({ 'msg': "Something went wrong" })
+    }
+})
+
+// update details
+UserRouter.patch('/edit', async (req, res) => {
+    try {
+       const token=req.headers?.authorization?.split(" ")[1];
+       if(!token) return res.status(401).json({"msg":'Your are not authorize'})
+       const {id,email}=jwt.decode(token)
+       console.log(id,email)
+       const newDetails=req.body
+       await UserModel.findByIdAndUpdate({_id:id},newDetails)
+       res.status(200).json({"msg":"Details updated"})
+    }
+    catch (err) {
+        console.error(err)
+        res.status(500).json({ 'msg': "Something went wrong" })
+    }
+})
+
 
 module.exports = { UserRouter }
