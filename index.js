@@ -28,7 +28,7 @@ app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login', session: false }),
     function (req, res) {
         const token = jwt.sign({ id: req.user._id,email: req.user.email }, process.env.secret, { expiresIn: '5 days' })
-        res.redirect(`https://ankeshkewatmock6.netlify.app/?token=${token}`)
+        res.redirect(`https://ankeshkewatmock6.netlify.app/index.html?token=${token}`)
     });
 
 
